@@ -47,8 +47,6 @@ export const getEventList = (daysGrid: TimeGrid[]) => {
     weekEventsList.push(eventList)
   })
 
-  console.log(weekEventsList)
-
   return weekEventsList
 }
 

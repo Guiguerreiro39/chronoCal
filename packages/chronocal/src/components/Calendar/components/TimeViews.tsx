@@ -4,7 +4,7 @@ import { EventLimit } from './EventLimit'
 import { Event } from './Event'
 import { cn, getEventEndCol, getEventStartingCol } from '../utils'
 import { ITimeViewProps } from '../types'
-import { eachDayOfInterval } from 'date-fns'
+import { eachDayOfInterval, getDate } from 'date-fns'
 
 // const MobileCalendarBody: React.FC<{ timeGrid: TimeGrid } & CalendarBodyProps> = ({
 //   timeGrid,
@@ -56,62 +56,86 @@ export const MonthView = (props: ITimeViewProps) => {
   return (
     <div className={cn('flex text-xs text-neutral-700 lg:flex-auto bg-neutral-200', props.className)}>
       <div ref={props.containerRef} className={cn('hidden w-full lg:grid lg:grid-rows-6 lg:gap-px')}>
-        {props.timeGrid.map((week, weekIndex) => (
-          <div key={weekIndex} className='relative hidden lg:grid lg:grid-cols-7 lg:gap-px'>
-            {week.map((day, dayIndex) => (
-              <DayContainer
-                key={day.date.toString()}
-                {...props}
-                day={day}
-                dayIndex={dayIndex}
-                dayContainerMinHeight={props.dayContainerMinHeight}
-              />
-            ))}
-            <ol className='absolute pointer-events-none w-full lg:grid lg:grid-cols-7 mt-9'>
-              {props.rowEvents?.[weekIndex] &&
-                props.rowEvents[weekIndex].slice(0, props.eventLimit).map((event) => {
-                  if (props.isEventExtendable) {
-                    return (
-                      <Event
-                        {...props.eventProperties}
-                        key={event.id}
-                        event={event}
-                        startColumn={getEventStartingCol(event.startAt, week[0].date)}
-                        endColumn={getEventEndCol(event.endAt, week[6].date)}
-                      />
-                    )
-                  }
+        {props.timeGrid.map((week, weekIndex) => {
+          const numEventsPerDay: Record<number, number> = {}
 
-                  return (
-                    <>
-                      {eachDayOfInterval({
-                        start: event.startAt,
-                        end: event.endAt,
-                      }).map((day) => (
+          return (
+            <div key={weekIndex} className='relative hidden lg:grid lg:grid-cols-7 lg:gap-px'>
+              {week.map((day, dayIndex) => (
+                <DayContainer
+                  key={day.date.toString()}
+                  {...props}
+                  day={day}
+                  dayIndex={dayIndex}
+                  dayContainerMinHeight={props.dayContainerMinHeight}
+                />
+              ))}
+              <ol className='absolute pointer-events-none w-full lg:grid lg:grid-cols-7 mt-9'>
+                {props.rowEvents?.[weekIndex] &&
+                  props.rowEvents[weekIndex].map((event) => {
+                    let isLimitReached = false
+                    const daysOfInterval = eachDayOfInterval({
+                      start: event.startAt,
+                      end: event.endAt,
+                    })
+
+                    for (const day of daysOfInterval) {
+                      const dayToNum = getDate(day)
+                      let currentNumOfEvents = 0
+
+                      if (numEventsPerDay[dayToNum]) {
+                        currentNumOfEvents = numEventsPerDay[dayToNum]
+                      }
+
+                      if (currentNumOfEvents >= props.eventLimit) {
+                        isLimitReached = true
+                      }
+
+                      numEventsPerDay[dayToNum] = currentNumOfEvents + 1
+                    }
+
+                    if (isLimitReached) return null
+
+                    if (props.isEventExtendable) {
+                      return (
                         <Event
                           {...props.eventProperties}
                           key={event.id}
                           event={event}
-                          startColumn={getEventStartingCol(day, week[0].date)}
-                          endColumn={getEventEndCol(day, week[6].date)}
+                          startColumn={getEventStartingCol(event.startAt, week[0].date)}
+                          endColumn={getEventEndCol(event.endAt, week[6].date)}
                         />
-                      ))}
-                    </>
-                  )
-                })}
-              {week
-                .filter((day) => day.events.length > props.eventLimit)
-                .map((day) => (
-                  <EventLimit
-                    {...props.eventLimitProperties}
-                    key={day.date.toString()}
-                    eventLimit={props.eventLimit}
-                    day={day}
-                  />
-                ))}
-            </ol>
-          </div>
-        ))}
+                      )
+                    }
+
+                    return (
+                      <>
+                        {daysOfInterval.map((day) => (
+                          <Event
+                            {...props.eventProperties}
+                            key={event.id}
+                            event={event}
+                            startColumn={getEventStartingCol(day, week[0].date)}
+                            endColumn={getEventEndCol(day, week[6].date)}
+                          />
+                        ))}
+                      </>
+                    )
+                  })}
+                {week
+                  .filter((day) => day.events.length > props.eventLimit)
+                  .map((day) => (
+                    <EventLimit
+                      {...props.eventLimitProperties}
+                      key={day.date.toString()}
+                      eventLimit={props.eventLimit}
+                      day={day}
+                    />
+                  ))}
+              </ol>
+            </div>
+          )
+        })}
       </div>
       {/* <MobileCalendarBody timeGrid={[]} {...bodyProps} /> */}
     </div>

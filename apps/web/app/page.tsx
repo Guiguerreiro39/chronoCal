@@ -45,7 +45,7 @@ export default function Page(): JSX.Element {
           <CalendarDays />
           <CalendarBody
             events={events}
-            eventLimit={3}
+            eventLimit={2}
             isEventExtendable
             eventProperties={{
               onClick: (event) => alert(event?.title),
