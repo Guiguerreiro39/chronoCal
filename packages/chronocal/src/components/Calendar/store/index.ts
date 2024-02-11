@@ -1,6 +1,6 @@
 import { getMonth, getYear } from 'date-fns'
 import { atom, createStore, getDefaultStore } from 'jotai'
-import { EventList, SingleTimeGrid, TimeView } from '../types'
+import { IEventList, ISingleTimeGrid, ITimeView } from '../types'
 import { useCallback } from 'react'
 
 type AtomCollection = {
@@ -13,16 +13,16 @@ type AtomCollection = {
     set: (value: number) => void
   }
   currentTimeContainer: {
-    get: SingleTimeGrid | undefined
-    set: (value: SingleTimeGrid | undefined) => void
+    get: ISingleTimeGrid | undefined
+    set: (value: ISingleTimeGrid | undefined) => void
   }
   events: {
-    get: EventList
-    set: (value: EventList) => void
+    get: IEventList
+    set: (value: IEventList) => void
   }
   timeView: {
-    get: TimeView | undefined
-    set: (value: TimeView | undefined) => void
+    get: ITimeView | undefined
+    set: (value: ITimeView | undefined) => void
   }
 }
 
@@ -31,9 +31,9 @@ export const calendarStore = createStore()
 export const CalendarAtoms = {
   month: atom<number>(getMonth(new Date())),
   year: atom<number>(getYear(new Date())),
-  currentTimeContainer: atom<SingleTimeGrid | undefined>(undefined),
-  events: atom<EventList>([]),
-  timeView: atom<TimeView | undefined>(undefined),
+  currentTimeContainer: atom<ISingleTimeGrid | undefined>(undefined),
+  events: atom<IEventList>([]),
+  timeView: atom<ITimeView | undefined>(undefined),
 }
 
 export const useCalendarAtoms = <K extends keyof typeof CalendarAtoms>(
@@ -49,16 +49,16 @@ export const useCalendarAtoms = <K extends keyof typeof CalendarAtoms>(
 
   const currentTimeContainer = defaultStore.get(CalendarAtoms.currentTimeContainer)
   const setCurrentTimeContainer = useCallback(
-    (value: SingleTimeGrid | undefined) => defaultStore.set(CalendarAtoms.currentTimeContainer, value),
+    (value: ISingleTimeGrid | undefined) => defaultStore.set(CalendarAtoms.currentTimeContainer, value),
     [defaultStore],
   )
 
   const events = defaultStore.get(CalendarAtoms.events)
-  const setEvents = useCallback((value: EventList) => defaultStore.set(CalendarAtoms.events, value), [defaultStore])
+  const setEvents = useCallback((value: IEventList) => defaultStore.set(CalendarAtoms.events, value), [defaultStore])
 
   const timeView = defaultStore.get(CalendarAtoms.timeView)
   const setTimeView = useCallback(
-    (value: TimeView | undefined) => defaultStore.set(CalendarAtoms.timeView, value),
+    (value: ITimeView | undefined) => defaultStore.set(CalendarAtoms.timeView, value),
     [defaultStore],
   )
 

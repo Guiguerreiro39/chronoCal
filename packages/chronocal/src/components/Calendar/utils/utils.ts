@@ -13,7 +13,7 @@ import {
   previousMonday,
   startOfDay,
 } from 'date-fns'
-import { EventList, SingleTimeGrid, TimeGrid } from '../types'
+import { IEventList, ISingleTimeGrid, ITimeGrid } from '../types'
 import { ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -33,11 +33,11 @@ export const getEventEndCol = (endAt: Date, lastDayOfWeek: Date): number => {
   return getDay(endAt) + 1
 }
 
-export const getEventList = (daysGrid: TimeGrid[]) => {
-  const weekEventsList: EventList[] = []
+export const getEventList = (daysGrid: ITimeGrid[]) => {
+  const weekEventsList: IEventList[] = []
 
   daysGrid.forEach((week) => {
-    let eventList: EventList = []
+    let eventList: IEventList = []
 
     week.forEach((day) => {
       const filteredEvents = day.events.filter((event) => !eventList.some((e) => e.id === event.id))
@@ -63,11 +63,11 @@ export const isDateInRange = (startAt: Date, endAt: Date, date: Date): boolean =
 export const getTimeGrid = (
   firstDayOfMonth: Date,
   lastDayOfMonth: Date,
-  events: EventList,
-  setCurrentDayGrid: (day: SingleTimeGrid) => void,
-): TimeGrid[] => {
-  const timeGrid: TimeGrid = []
-  let rowTimeGrid: TimeGrid[] = []
+  events: IEventList,
+  setCurrentDayGrid: (day: ISingleTimeGrid) => void,
+): ITimeGrid[] => {
+  const timeGrid: ITimeGrid = []
+  let rowTimeGrid: ITimeGrid[] = []
 
   let firstMonday = firstDayOfMonth
   let lastSunday = lastDayOfMonth
@@ -85,7 +85,7 @@ export const getTimeGrid = (
   }
 
   let currentDay = firstMonday
-  let dayEvents: EventList = []
+  let dayEvents: IEventList = []
 
   while (currentDay <= lastSunday) {
     events.forEach((event) => {
@@ -94,7 +94,7 @@ export const getTimeGrid = (
       }
     })
 
-    const time: SingleTimeGrid = {
+    const time: ISingleTimeGrid = {
       date: currentDay,
       isCurrentMonth: isSameMonth(currentDay, firstDayOfMonth),
       events: dayEvents,

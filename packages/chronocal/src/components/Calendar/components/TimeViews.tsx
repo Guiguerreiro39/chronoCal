@@ -1,10 +1,10 @@
 import React from 'react'
 import { DayContainer } from './DayContainer'
 import { EventLimit } from './EventLimit'
-import { Event } from './Event'
 import { cn, getEventEndCol, getEventStartingCol } from '../utils'
 import { ITimeViewProps } from '../types'
-import { eachDayOfInterval, getDate } from 'date-fns'
+import { addDays, eachDayOfInterval, getDate } from 'date-fns'
+import { Event } from './Event'
 
 // const MobileCalendarBody: React.FC<{ timeGrid: TimeGrid } & CalendarBodyProps> = ({
 //   timeGrid,
@@ -75,7 +75,7 @@ export const MonthView = (props: ITimeViewProps) => {
                   props.rowEvents[weekIndex].map((event) => {
                     let isLimitReached = false
                     const daysOfInterval = eachDayOfInterval({
-                      start: event.startAt,
+                      start: event.startAt < week[0].date ? week[0].date : event.startAt, // Check if the startAt Date is in this week
                       end: event.endAt,
                     })
 
@@ -110,15 +110,17 @@ export const MonthView = (props: ITimeViewProps) => {
 
                     return (
                       <>
-                        {daysOfInterval.map((day) => (
-                          <Event
-                            {...props.eventProperties}
-                            key={event.id}
-                            event={event}
-                            startColumn={getEventStartingCol(day, week[0].date)}
-                            endColumn={getEventEndCol(day, week[6].date)}
-                          />
-                        ))}
+                        {daysOfInterval
+                          .filter((day) => day < addDays(week[6].date, 1)) // Filter for the days of this week only
+                          .map((day) => (
+                            <Event
+                              {...props.eventProperties}
+                              key={[day.toString(), event.id].join('_')}
+                              event={event}
+                              startColumn={getEventStartingCol(day, week[0].date)}
+                              endColumn={getEventStartingCol(day, week[0].date)}
+                            />
+                          ))}
                       </>
                     )
                   })}

@@ -2,7 +2,7 @@ import React, { ElementRef, useCallback, useEffect, useRef, useState } from 'rea
 
 import { endOfMonth, startOfMonth } from 'date-fns'
 import { getEventList, getTimeGrid } from '../utils'
-import { EventList, TimeGrid, SingleTimeGrid } from '../types'
+import { IEventList, ITimeGrid, ISingleTimeGrid } from '../types'
 import { MonthView } from './TimeViews'
 import { ICalendarBodyProps } from '../types'
 import { useCalendarAtoms } from '../store'
@@ -18,8 +18,8 @@ export const CalendarBody = (props: ICalendarBodyProps) => {
 
   const [timeView] = useCalendarAtoms('timeView')
 
-  const [timeGrid, setTimeGrid] = useState<TimeGrid[]>([])
-  const [rowEvents, setRowEvents] = useState<EventList[]>([])
+  const [timeGrid, setTimeGrid] = useState<ITimeGrid[]>([])
+  const [rowEvents, setRowEvents] = useState<IEventList[]>([])
   const [firstDayOfMonth, setFirstDayOfMonth] = useState<Date>(startOfMonth(new Date(year, month)))
   const [lastDayOfMonth, setLastDayOfMonth] = useState<Date>(endOfMonth(new Date(year, month)))
   const [eventsContainerHeight, setEventsContainerHeight] = useState<number>(0)
@@ -27,7 +27,7 @@ export const CalendarBody = (props: ICalendarBodyProps) => {
   const containerRef = useRef<ElementRef<'div'>>(null)
 
   const handleCurrentTimeContainer = useCallback(
-    (time: SingleTimeGrid) => {
+    (time: ISingleTimeGrid) => {
       if (!currentTimeContainer) {
         setCurrentTimeContainer(time)
       }

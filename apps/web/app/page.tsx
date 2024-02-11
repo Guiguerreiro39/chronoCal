@@ -49,6 +49,7 @@ export default function Page(): JSX.Element {
             isEventExtendable
             eventProperties={{
               onClick: (event) => alert(event?.title),
+              className: "rounded bg-red-500/10 p-2",
             }}
           />
         </CalendarContent>

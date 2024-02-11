@@ -1,12 +1,12 @@
 import { HTMLAttributes, LegacyRef, ReactNode } from 'react'
 
 export type ICalendarProps = {
-  defaultTimeView?: TimeView
+  defaultTimeView?: ITimeView
 } & HTMLAttributes<HTMLDivElement>
 
-export type TimeView = 'day' | 'week' | 'month'
+export type ITimeView = 'day' | 'week' | 'month'
 
-export type Event = {
+export type IEvent = {
   id?: string
   className?: string
   customProps?: any
@@ -15,18 +15,18 @@ export type Event = {
   title: string
 }
 
-export type EventList = Event[]
+export type IEventList = IEvent[]
 
-export type SingleTimeGrid = {
+export type ISingleTimeGrid = {
   date: Date
   isCurrentMonth: boolean
-  events: EventList
+  events: IEventList
 }
 
-export type TimeGrid = SingleTimeGrid[]
+export type ITimeGrid = ISingleTimeGrid[]
 
-export type EventProperties<TProperties extends 'eventLimit' | 'event'> = {
-  onClick?: (event?: TProperties extends 'eventLimit' ? Event[] : Event) => void
+export type IEventProperties<TProperties extends 'eventLimit' | 'event'> = {
+  onClick?: (event?: TProperties extends 'eventLimit' ? IEvent[] : IEvent) => void
   className?: string
   containerClassName?: string
 }
@@ -34,46 +34,46 @@ export type EventProperties<TProperties extends 'eventLimit' | 'event'> = {
 export type ICalendarBodyProps = {
   isEventExtendable?: boolean
   eventLimit?: number
-  events?: EventList
-  eventProperties?: EventProperties<'event'>
-  eventLimitProperties?: EventProperties<'eventLimit'>
+  events?: IEventList
+  eventProperties?: IEventProperties<'event'>
+  eventLimitProperties?: IEventProperties<'eventLimit'>
 } & HTMLAttributes<HTMLDivElement>
 
 export type IDayContainerProps = {
-  day: SingleTimeGrid
+  day: ISingleTimeGrid
   dayContainerMinHeight: string
   dayIndex: number
   todayClassName?: string
   todayContainerClassName?: string
-  todayContainerOnClick?: (day?: SingleTimeGrid) => void
+  todayContainerOnClick?: (day?: ISingleTimeGrid) => void
   dayClassName?: string
-  dayOnClick?: (day?: SingleTimeGrid) => void
+  dayOnClick?: (day?: ISingleTimeGrid) => void
   dayContainerClassName?: string
-  dayContainerOnClick?: (day?: SingleTimeGrid) => void
+  dayContainerOnClick?: (day?: ISingleTimeGrid) => void
   bodyClassName?: string
-  defaultTimeView?: TimeView
+  defaultTimeView?: ITimeView
 }
 
 export type ITimeViewProps = {
   containerRef: LegacyRef<HTMLDivElement> | undefined
-  timeGrid: TimeGrid[]
+  timeGrid: ITimeGrid[]
   dayContainerMinHeight: string
-  rowEvents: EventList[]
+  rowEvents: IEventList[]
   eventLimit: number
 } & Omit<ICalendarBodyProps, 'events'> &
   Omit<IDayContainerProps, 'day' | 'dayIndex' | 'dayContainerMinHeight'> &
   HTMLAttributes<HTMLDivElement>
 
 export type IEventLimitProps = {
-  day: SingleTimeGrid
+  day: ISingleTimeGrid
   eventLimit: number
-} & EventProperties<'eventLimit'>
+} & IEventProperties<'eventLimit'>
 
 export type IEventProps = {
-  event: Event
+  event: IEvent
   startColumn: number
   endColumn: number
-} & EventProperties<'event'>
+} & IEventProperties<'event'>
 
 export interface HeaderProps {
   className?: string
