@@ -48,15 +48,15 @@ export default function Page(): JSX.Element {
             eventLimit={2}
             isEventExtendable
             eventProperties={{
+              className:
+                "bg-red-400 rounded text-white text-start hover:bg-red-200",
               onClick: (event) => alert(event.title),
-              className: "rounded bg-red-500/50 p-2",
             }}
             dayContainerProperties={{
-              className: "hover:bg-red-50",
-              onClick: (day) => alert(day.date),
+              className: "bg-blue-50",
               currentMonthOnly: true,
               differentMonthProperties: {
-                className: "hover:bg-blue-50",
+                className: "bg-yellow-50",
               },
             }}
           />
@@ -65,3 +65,19 @@ export default function Page(): JSX.Element {
     </main>
   );
 }
+
+// events={events}
+// eventLimit={2}
+// isEventExtendable
+// eventProperties={{
+//   onClick: (event) => alert(event.title),
+//   className: "rounded bg-red-500/50 p-2",
+// }}
+// dayContainerProperties={{
+//   className: "hover:bg-red-50",
+//   onClick: (day) => alert(day.date),
+//   currentMonthOnly: true,
+//   differentMonthProperties: {
+//     className: "hover:bg-blue-50",
+//   },
+// }}

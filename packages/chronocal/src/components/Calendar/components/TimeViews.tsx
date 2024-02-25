@@ -73,6 +73,18 @@ export const MonthView = (props: ITimeViewProps) => {
               <ol className='absolute pointer-events-none w-full lg:grid lg:grid-cols-7 mt-9'>
                 {props.rowEvents?.[weekIndex] &&
                   props.rowEvents[weekIndex].map((event) => {
+                    if (props.isEventExtendable) {
+                      return (
+                        <Event
+                          {...props.eventProperties}
+                          key={event.id}
+                          event={event}
+                          startColumn={getEventStartingCol(event.startAt, week[0].date)}
+                          endColumn={getEventEndCol(event.endAt, week[6].date)}
+                        />
+                      )
+                    }
+
                     let isLimitReached = false
                     const daysOfInterval = eachDayOfInterval({
                       start: event.startAt < week[0].date ? week[0].date : event.startAt, // Check if the startAt Date is in this week
@@ -95,18 +107,6 @@ export const MonthView = (props: ITimeViewProps) => {
                     }
 
                     if (isLimitReached) return null
-
-                    if (props.isEventExtendable) {
-                      return (
-                        <Event
-                          {...props.eventProperties}
-                          key={event.id}
-                          event={event}
-                          startColumn={getEventStartingCol(event.startAt, week[0].date)}
-                          endColumn={getEventEndCol(event.endAt, week[6].date)}
-                        />
-                      )
-                    }
 
                     return (
                       <>

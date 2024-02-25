@@ -13,7 +13,7 @@ import {
   previousMonday,
   startOfDay,
 } from 'date-fns'
-import { IEventList, ISingleTimeGrid, ITimeGrid } from '../types'
+import { IEventList, ITimeContainer, ITimeGrid } from '../types'
 import { ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -24,13 +24,17 @@ export function cn(...inputs: ClassValue[]) {
 export const getEventStartingCol = (startAt: Date, firstDayOfWeek: Date): number => {
   if (isAfter(firstDayOfWeek, startAt)) return 1
 
-  return getDay(startAt)
+  const day = getDay(startAt)
+
+  return day === 0 ? 7 : day
 }
 
 export const getEventEndCol = (endAt: Date, lastDayOfWeek: Date): number => {
   if (isBefore(lastDayOfWeek, endAt)) return 8 // Always + 1 in end columns
 
-  return getDay(endAt) + 1
+  const day = getDay(endAt)
+
+  return day === 0 ? 8 : day + 1
 }
 
 export const getEventList = (daysGrid: ITimeGrid[]) => {
@@ -64,7 +68,7 @@ export const getTimeGrid = (
   firstDayOfMonth: Date,
   lastDayOfMonth: Date,
   events: IEventList,
-  setCurrentDayGrid: (day: ISingleTimeGrid) => void,
+  setCurrentDayGrid: (day: ITimeContainer) => void,
 ): ITimeGrid[] => {
   const timeGrid: ITimeGrid = []
   let rowTimeGrid: ITimeGrid[] = []
@@ -94,7 +98,7 @@ export const getTimeGrid = (
       }
     })
 
-    const time: ISingleTimeGrid = {
+    const time: ITimeContainer = {
       date: currentDay,
       isCurrentMonth: isSameMonth(currentDay, firstDayOfMonth),
       events: dayEvents,
