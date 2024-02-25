@@ -48,8 +48,16 @@ export default function Page(): JSX.Element {
             eventLimit={2}
             isEventExtendable
             eventProperties={{
-              onClick: (event) => alert(event?.title),
-              className: "rounded bg-red-500/10 p-2",
+              onClick: (event) => alert(event.title),
+              className: "rounded bg-red-500/50 p-2",
+            }}
+            dayContainerProperties={{
+              className: "hover:bg-red-50",
+              onClick: (day) => alert(day.date),
+              currentMonthOnly: true,
+              differentMonthProperties: {
+                className: "hover:bg-blue-50",
+              },
             }}
           />
         </CalendarContent>

@@ -1,6 +1,6 @@
 import { getMonth, getYear } from 'date-fns'
 import { atom, createStore, getDefaultStore } from 'jotai'
-import { IEventList, ISingleTimeGrid, ITimeView } from '../types'
+import { IEventList, ITimeContainer, ITimeView } from '../types'
 import { useCallback } from 'react'
 
 type AtomCollection = {
@@ -13,8 +13,8 @@ type AtomCollection = {
     set: (value: number) => void
   }
   currentTimeContainer: {
-    get: ISingleTimeGrid | undefined
-    set: (value: ISingleTimeGrid | undefined) => void
+    get: ITimeContainer | undefined
+    set: (value: ITimeContainer | undefined) => void
   }
   events: {
     get: IEventList
@@ -31,7 +31,7 @@ export const calendarStore = createStore()
 export const CalendarAtoms = {
   month: atom<number>(getMonth(new Date())),
   year: atom<number>(getYear(new Date())),
-  currentTimeContainer: atom<ISingleTimeGrid | undefined>(undefined),
+  currentTimeContainer: atom<ITimeContainer | undefined>(undefined),
   events: atom<IEventList>([]),
   timeView: atom<ITimeView | undefined>(undefined),
 }
@@ -49,7 +49,7 @@ export const useCalendarAtoms = <K extends keyof typeof CalendarAtoms>(
 
   const currentTimeContainer = defaultStore.get(CalendarAtoms.currentTimeContainer)
   const setCurrentTimeContainer = useCallback(
-    (value: ISingleTimeGrid | undefined) => defaultStore.set(CalendarAtoms.currentTimeContainer, value),
+    (value: ITimeContainer | undefined) => defaultStore.set(CalendarAtoms.currentTimeContainer, value),
     [defaultStore],
   )
 

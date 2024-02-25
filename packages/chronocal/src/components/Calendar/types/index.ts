@@ -17,16 +17,16 @@ export type IEvent = {
 
 export type IEventList = IEvent[]
 
-export type ISingleTimeGrid = {
+export type ITimeContainer = {
   date: Date
   isCurrentMonth: boolean
   events: IEventList
 }
 
-export type ITimeGrid = ISingleTimeGrid[]
+export type ITimeGrid = ITimeContainer[]
 
 export type IEventProperties<TProperties extends 'eventLimit' | 'event'> = {
-  onClick?: (event?: TProperties extends 'eventLimit' ? IEvent[] : IEvent) => void
+  onClick?: (event: TProperties extends 'eventLimit' ? IEvent[] : IEvent) => void
   className?: string
   containerClassName?: string
 }
@@ -37,21 +37,28 @@ export type ICalendarBodyProps = {
   events?: IEventList
   eventProperties?: IEventProperties<'event'>
   eventLimitProperties?: IEventProperties<'eventLimit'>
-} & HTMLAttributes<HTMLDivElement>
+} & HTMLAttributes<HTMLDivElement> &
+  IDayContainerProperties
+
+export type IDayProperties = {
+  onClick?: (day: ITimeContainer) => void
+  className?: string
+  currentMonthOnly?: boolean
+  differentMonthProperties?: Omit<IDayProperties, 'currentMonthOnly'>
+}
 
 export type IDayContainerProps = {
-  day: ISingleTimeGrid
+  day: ITimeContainer
   dayContainerMinHeight: string
   dayIndex: number
-  todayClassName?: string
-  todayContainerClassName?: string
-  todayContainerOnClick?: (day?: ISingleTimeGrid) => void
-  dayClassName?: string
-  dayOnClick?: (day?: ISingleTimeGrid) => void
-  dayContainerClassName?: string
-  dayContainerOnClick?: (day?: ISingleTimeGrid) => void
-  bodyClassName?: string
   defaultTimeView?: ITimeView
+} & IDayContainerProperties
+
+export type IDayContainerProperties = {
+  todayProperties?: IDayProperties
+  todayContainerProperties?: IDayProperties
+  dayProperties?: IDayProperties
+  dayContainerProperties?: IDayProperties
 }
 
 export type ITimeViewProps = {
@@ -65,7 +72,7 @@ export type ITimeViewProps = {
   HTMLAttributes<HTMLDivElement>
 
 export type IEventLimitProps = {
-  day: ISingleTimeGrid
+  day: ITimeContainer
   eventLimit: number
 } & IEventProperties<'eventLimit'>
 

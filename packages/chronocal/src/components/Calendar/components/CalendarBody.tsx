@@ -2,7 +2,7 @@ import React, { ElementRef, useCallback, useEffect, useRef, useState } from 'rea
 
 import { endOfMonth, startOfMonth } from 'date-fns'
 import { getEventList, getTimeGrid } from '../utils'
-import { IEventList, ITimeGrid, ISingleTimeGrid } from '../types'
+import { IEventList, ITimeGrid, ITimeContainer } from '../types'
 import { MonthView } from './TimeViews'
 import { ICalendarBodyProps } from '../types'
 import { useCalendarAtoms } from '../store'
@@ -27,7 +27,7 @@ export const CalendarBody = (props: ICalendarBodyProps) => {
   const containerRef = useRef<ElementRef<'div'>>(null)
 
   const handleCurrentTimeContainer = useCallback(
-    (time: ISingleTimeGrid) => {
+    (time: ITimeContainer) => {
       if (!currentTimeContainer) {
         setCurrentTimeContainer(time)
       }
