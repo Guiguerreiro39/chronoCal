@@ -1,14 +1,13 @@
 import React from 'react'
 import { formatISO, getDate, getMonth, isToday } from 'date-fns'
-import { Element, cn } from '../utils'
+import { Element, cn, sortPropertiesByPriority } from '../utils'
 import { useCalendarAtoms } from '../store'
 import { IDayContainerProps, IDayProperties } from '../types'
 
 export const DayContainer = (props: IDayContainerProps) => {
-  const [, setCurrentTimeContainer] = useCalendarAtoms('currentTimeContainer')
   const [month] = useCalendarAtoms('month')
 
-  const notCurrentMonthClassName = !props.day.isCurrentMonth && 'bg-neutral-50 text-neutral-500'
+  const notCurrentMonthDefaultClassName = !props.day.isCurrentMonth && 'bg-neutral-50 text-neutral-500'
   const formattedDate = formatISO(props.day.date, { representation: 'date' })
   const isCurrentMonth = month === getMonth(props.day.date)
 
@@ -27,61 +26,56 @@ export const DayContainer = (props: IDayContainerProps) => {
   const dayProperties = propertiesSetup(props.dayProperties)
   const dayContainerProperties = propertiesSetup(props.dayContainerProperties)
   const todayProperties = propertiesSetup(props.todayProperties)
-  const todayContainerPropeties = propertiesSetup(props.todayContainerProperties)
+  const todayContainerProperties = propertiesSetup(props.todayContainerProperties)
+
+  const containerSortedProperties = sortPropertiesByPriority([
+    dayContainerProperties,
+    isToday(props.day.date) ? todayContainerProperties : null,
+  ])
+  const daySortedProperties = sortPropertiesByPriority([
+    dayProperties,
+    isToday(props.day.date) ? todayProperties : null,
+  ])
 
   return (
     <>
       <Element
-        as={
-          typeof dayContainerProperties?.onClick === 'function' ||
-          (typeof todayContainerPropeties?.onClick === 'function' && isToday(props.day.date))
-            ? 'button'
-            : 'div'
-        }
+        as={containerSortedProperties.some((p) => typeof p?.onClick === 'function') ? 'button' : 'div'}
         onClick={() => {
-          if (isToday(props.day.date) && todayContainerPropeties?.onClick) {
-            todayContainerPropeties?.onClick(props.day)
-          } else if (dayContainerProperties?.onClick) {
-            dayContainerProperties?.onClick(props.day)
-          }
-
-          setCurrentTimeContainer(props.day)
+          containerSortedProperties
+            .filter((p) => typeof p?.onClick === 'function')
+            .pop()
+            ?.onClick?.(props.day)
         }}
         key={formattedDate}
         style={{ minHeight: props.dayContainerMinHeight }}
         className={cn(
           'flex flex-col justify-start bg-white px-3 py-2 text-neutral-700',
-          notCurrentMonthClassName,
-          dayContainerProperties?.className,
-          isToday(props.day.date) && todayContainerPropeties?.className,
+          notCurrentMonthDefaultClassName,
+          ...containerSortedProperties.map((p) =>
+            typeof p?.className === 'function' ? p?.className(props.day) : p?.className,
+          ),
         )}
       >
         <time
           dateTime={formattedDate}
           className={cn(
             'flex h-6 w-6 items-center justify-center rounded-full',
-            dayProperties?.className,
-            isToday(props.day.date) && cn('font-semibold text-white bg-neutral-600', todayProperties?.className),
+            ...daySortedProperties.map((p) =>
+              typeof p?.className === 'function' ? p?.className(props.day) : p?.className,
+            ),
           )}
         >
           <Element
-            as={
-              typeof dayProperties?.onClick === 'function' ||
-              (isToday(props.day.date) && typeof todayProperties?.onClick)
-                ? 'button'
-                : 'div'
-            }
+            as={'div'}
+            role='button'
             onClick={(e) => {
               e?.stopPropagation()
 
-              if (isToday(props.day.date) && todayProperties?.onClick) {
-                todayProperties?.onClick(props.day)
-                return
-              }
-
-              if (dayProperties?.onClick) {
-                dayProperties?.onClick(props.day)
-              }
+              daySortedProperties
+                .filter((p) => typeof p?.onClick === 'function')
+                .pop()
+                ?.onClick?.(props.day)
             }}
           >
             {getDate(props.day.date)}

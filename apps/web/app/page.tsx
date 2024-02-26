@@ -7,8 +7,10 @@ import {
   CalendarDays,
 } from "chronocal";
 import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 export default function Page(): JSX.Element {
+  const [activeDay, setActiveDay] = useState<Date>();
   const [events, setEvents] = useState([
     {
       title: "Design review",
@@ -58,6 +60,17 @@ export default function Page(): JSX.Element {
               differentMonthProperties: {
                 className: "bg-yellow-50",
               },
+            }}
+            todayContainerProperties={{
+              className: "bg-purple-50",
+            }}
+            dayProperties={{
+              className: (day) =>
+                twMerge(
+                  "rounded-full p-0.5 bg-white",
+                  activeDay === day.date && "bg-emerald-300"
+                ),
+              onClick: (day) => setActiveDay(day.date),
             }}
           />
         </CalendarContent>

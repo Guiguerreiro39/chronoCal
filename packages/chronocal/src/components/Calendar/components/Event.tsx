@@ -16,7 +16,7 @@ export const Event = (props: IEventProps) => {
         onClick={() => props.onClick && props.onClick(props.event)}
         className={cn(
           'rounded-full bg-neutral-200 w-full text-center px-1 pointer-events-auto hover:bg-blue-100',
-          props.className,
+          typeof props.className === 'function' ? props.className(props.event) : props.className,
           props.event.className,
         )}
       >

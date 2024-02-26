@@ -6,10 +6,11 @@ export const Element: React.FC<
     as?: 'div' | 'button'
     onClick?: (e?: React.MouseEvent<HTMLElement>) => void
   }
-> = ({ children, as = 'div', onClick = () => {}, ...props }) => {
+> = ({ children, as = 'div', onClick = () => {}, role, ...props }) => {
   if (as === 'button')
     return (
       <button
+        role={role}
         onClick={(e) => {
           e.preventDefault()
           onClick(e)
@@ -20,5 +21,18 @@ export const Element: React.FC<
       </button>
     )
 
-  return <div {...props}>{children}</div>
+  return (
+    <div
+      role={role}
+      onClick={(e) => {
+        if (role === 'button') {
+          e.preventDefault()
+          onClick(e)
+        }
+      }}
+      {...props}
+    >
+      {children}
+    </div>
+  )
 }

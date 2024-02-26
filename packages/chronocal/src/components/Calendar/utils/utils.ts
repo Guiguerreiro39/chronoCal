@@ -13,7 +13,7 @@ import {
   previousMonday,
   startOfDay,
 } from 'date-fns'
-import { IEventList, ITimeContainer, ITimeGrid } from '../types'
+import { IDayProperties, IEventList, ITimeContainer, ITimeGrid } from '../types'
 import { ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -119,4 +119,14 @@ export const getTimeGrid = (
   }
 
   return rowTimeGrid
+}
+
+export const sortPropertiesByPriority = (properties: (IDayProperties | undefined | null)[]) => {
+  return properties.sort((a, b) => {
+    if (typeof b?.priority === 'number' && (a?.priority === undefined || a?.priority === null)) return -1
+    if (typeof a?.priority === 'number' && (b?.priority === undefined || b?.priority === null)) return 1
+    if (typeof a?.priority === 'number' && typeof b?.priority === 'number') return a?.priority - b?.priority
+
+    return 0
+  })
 }

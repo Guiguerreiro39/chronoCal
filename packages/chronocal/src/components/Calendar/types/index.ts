@@ -25,9 +25,9 @@ export type ITimeContainer = {
 
 export type ITimeGrid = ITimeContainer[]
 
-export type IEventProperties<TProperties extends 'eventLimit' | 'event'> = {
-  onClick?: (event: TProperties extends 'eventLimit' ? IEvent[] : IEvent) => void
-  className?: string
+export type IEventProperties<TEventProperties extends 'eventLimit' | 'event'> = {
+  onClick?: (event: TEventProperties extends 'eventLimit' ? IEvent[] : IEvent) => void
+  className?: string | ((event?: TEventProperties extends 'eventLimit' ? IEvent[] : IEvent) => string)
   containerClassName?: string
 }
 
@@ -42,8 +42,9 @@ export type ICalendarBodyProps = {
 
 export type IDayProperties = {
   onClick?: (day: ITimeContainer) => void
-  className?: string
+  className?: string | ((day: ITimeContainer) => string)
   currentMonthOnly?: boolean
+  priority?: number
   differentMonthProperties?: Omit<IDayProperties, 'currentMonthOnly'>
 }
 
