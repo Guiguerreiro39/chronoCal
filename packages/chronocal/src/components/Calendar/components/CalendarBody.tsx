@@ -1,14 +1,16 @@
 import React, { ElementRef, useCallback, useEffect, useRef, useState } from 'react'
 
 import { endOfMonth, startOfMonth } from 'date-fns'
-import { getEventList, getTimeGrid } from '../utils'
+import { getEventList, getTimeGrid, useBreakpoint } from '../utils'
 import { IEventList, ITimeGrid, ITimeContainer } from '../types'
-import { MonthView } from './TimeViews'
+import { ContentViews } from './ContentViews'
 import { ICalendarBodyProps } from '../types'
 import { useCalendarAtoms } from '../store'
 import { v4 as uuid } from 'uuid'
 
 export const CalendarBody = (props: ICalendarBodyProps) => {
+  const breakpoint = useBreakpoint()
+
   const { events: defaultEvents = [], ...rest } = props
 
   const [month] = useCalendarAtoms('month')
@@ -45,7 +47,7 @@ export const CalendarBody = (props: ICalendarBodyProps) => {
         )
       }
     }
-  }, [containerRef, rowEvents, setEventsContainerHeight, eventLimit])
+  }, [containerRef, rowEvents, breakpoint, setEventsContainerHeight, eventLimit])
 
   useEffect(() => {
     setFirstDayOfMonth(startOfMonth(new Date(year, month)))
@@ -74,12 +76,12 @@ export const CalendarBody = (props: ICalendarBodyProps) => {
   const dayContainerMinHeight = useCallback(() => `calc(2.3rem + ${eventsContainerHeight}px)`, [eventsContainerHeight])
 
   return (
-    <MonthView
+    <ContentViews
       {...rest}
       eventLimit={eventLimit}
       timeGrid={timeGrid}
       dayContainerMinHeight={dayContainerMinHeight()}
-      containerRef={containerRef}
+      ref={containerRef}
       rowEvents={rowEvents}
     />
   )

@@ -2,7 +2,7 @@ import React from 'react'
 import { formatISO, getDate, getMonth, isToday } from 'date-fns'
 import { Element, cn, sortPropertiesByPriority } from '../utils'
 import { useCalendarAtoms } from '../store'
-import { IDayContainerProps, IDayProperties } from '../types'
+import { IDayContainerProps, ICellProperties } from '../types'
 
 export const DayContainer = (props: IDayContainerProps) => {
   const [month] = useCalendarAtoms('month')
@@ -11,7 +11,7 @@ export const DayContainer = (props: IDayContainerProps) => {
   const formattedDate = formatISO(props.day.date, { representation: 'date' })
   const isCurrentMonth = month === getMonth(props.day.date)
 
-  const propertiesSetup = (properties?: IDayProperties) => {
+  const propertiesSetup = (properties?: ICellProperties) => {
     if (properties) {
       if (typeof properties.currentMonthOnly === 'undefined' || (properties.currentMonthOnly && isCurrentMonth)) {
         return properties
@@ -23,19 +23,16 @@ export const DayContainer = (props: IDayContainerProps) => {
     return null
   }
 
-  const dayProperties = propertiesSetup(props.dayProperties)
-  const dayContainerProperties = propertiesSetup(props.dayContainerProperties)
-  const todayProperties = propertiesSetup(props.todayProperties)
-  const todayContainerProperties = propertiesSetup(props.todayContainerProperties)
+  const cellProperties = propertiesSetup(props.cellProperties)
+  const cellContainerProperties = propertiesSetup(props.cellContainerProperties)
+  const nowProperties = propertiesSetup(props.nowProperties)
+  const nowContainerProperties = propertiesSetup(props.nowContainerProperties)
 
   const containerSortedProperties = sortPropertiesByPriority([
-    dayContainerProperties,
-    isToday(props.day.date) ? todayContainerProperties : null,
+    cellContainerProperties,
+    isToday(props.day.date) ? nowContainerProperties : null,
   ])
-  const daySortedProperties = sortPropertiesByPriority([
-    dayProperties,
-    isToday(props.day.date) ? todayProperties : null,
-  ])
+  const daySortedProperties = sortPropertiesByPriority([cellProperties, isToday(props.day.date) ? nowProperties : null])
 
   return (
     <>

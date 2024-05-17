@@ -1,10 +1,33 @@
-import { HTMLAttributes, LegacyRef, ReactNode } from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 
 export type ICalendarProps = {
   defaultTimeView?: ITimeView
 } & HTMLAttributes<HTMLDivElement>
 
 export type ITimeView = 'day' | 'week' | 'month'
+
+export type IEventProperties<TEventProperties extends 'eventLimit' | 'event'> = {
+  onClick?: (event: TEventProperties extends 'eventLimit' ? IEvent[] : IEvent) => void
+  className?: string | ((event: TEventProperties extends 'eventLimit' ? IEvent[] : IEvent) => string)
+  containerClassName?: string
+  component?: (
+    event: TEventProperties extends 'eventLimit' ? IEvent[] : IEvent,
+    eventProperties?: Omit<IEventProperties<TEventProperties>, 'component'>,
+  ) => ReactNode
+}
+
+export type ICellProperties = {
+  onClick?: (day: ITimeContainer) => void
+  className?: string | ((day: ITimeContainer) => string)
+  currentMonthOnly?: boolean
+  priority?: number
+  differentMonthProperties?: Omit<ICellProperties, 'currentMonthOnly'>
+}
+
+export type IHeaderProperties = {
+  onClick?: (date: string) => void
+  className?: string | ((date: string) => string)
+}
 
 export type IEvent = {
   id?: string
@@ -25,12 +48,6 @@ export type ITimeContainer = {
 
 export type ITimeGrid = ITimeContainer[]
 
-export type IEventProperties<TEventProperties extends 'eventLimit' | 'event'> = {
-  onClick?: (event: TEventProperties extends 'eventLimit' ? IEvent[] : IEvent) => void
-  className?: string | ((event?: TEventProperties extends 'eventLimit' ? IEvent[] : IEvent) => string)
-  containerClassName?: string
-}
-
 export type ICalendarBodyProps = {
   isEventExtendable?: boolean
   eventLimit?: number
@@ -38,32 +55,23 @@ export type ICalendarBodyProps = {
   eventProperties?: IEventProperties<'event'>
   eventLimitProperties?: IEventProperties<'eventLimit'>
 } & HTMLAttributes<HTMLDivElement> &
-  IDayContainerProperties
-
-export type IDayProperties = {
-  onClick?: (day: ITimeContainer) => void
-  className?: string | ((day: ITimeContainer) => string)
-  currentMonthOnly?: boolean
-  priority?: number
-  differentMonthProperties?: Omit<IDayProperties, 'currentMonthOnly'>
-}
+  IcellContainerProperties
 
 export type IDayContainerProps = {
   day: ITimeContainer
   dayContainerMinHeight: string
   dayIndex: number
   defaultTimeView?: ITimeView
-} & IDayContainerProperties
+} & IcellContainerProperties
 
-export type IDayContainerProperties = {
-  todayProperties?: IDayProperties
-  todayContainerProperties?: IDayProperties
-  dayProperties?: IDayProperties
-  dayContainerProperties?: IDayProperties
+export type IcellContainerProperties = {
+  nowProperties?: ICellProperties
+  nowContainerProperties?: ICellProperties
+  cellProperties?: ICellProperties
+  cellContainerProperties?: ICellProperties
 }
 
 export type ITimeViewProps = {
-  containerRef: LegacyRef<HTMLDivElement> | undefined
   timeGrid: ITimeGrid[]
   dayContainerMinHeight: string
   rowEvents: IEventList[]
@@ -75,13 +83,17 @@ export type ITimeViewProps = {
 export type IEventLimitProps = {
   day: ITimeContainer
   eventLimit: number
-} & IEventProperties<'eventLimit'>
+  properties?: IEventProperties<'eventLimit'>
+  events: IEvent[]
+}
 
 export type IEventProps = {
   event: IEvent
   startColumn: number
   endColumn: number
-} & IEventProperties<'event'>
+  row: number
+  properties?: IEventProperties<'event'>
+}
 
 export interface HeaderProps {
   className?: string
@@ -94,7 +106,7 @@ export interface MonthSwitcherProps {
   arrowsClassName?: string
 }
 
-export type ICalendarDaysProps = {
-  cellClassName?: string
-  cellOnClick?: (day: string) => void
+export type ICalendarHeaderProps = {
+  headerProperties?: IHeaderProperties
+  labelText?: string[]
 } & HTMLAttributes<HTMLDivElement>

@@ -1,11 +1,11 @@
 import React from 'react'
 import { weekDays, Element, cn } from '../utils'
-import { ICalendarDaysProps } from '../types'
+import { ICalendarHeaderProps } from '../types'
 
-export const CalendarDays = (props: ICalendarDaysProps) => {
-  const days = weekDays()
+export const CalendarHeader = (props: ICalendarHeaderProps) => {
+  const { headerProperties, labelText, className, ...rest } = props
 
-  const { cellOnClick, cellClassName, className, ...rest } = props
+  const days = labelText ?? weekDays()
 
   return (
     <div
@@ -14,12 +14,12 @@ export const CalendarDays = (props: ICalendarDaysProps) => {
     >
       {days.map((day) => (
         <Element
-          as={typeof cellOnClick === 'function' ? 'button' : 'div'}
-          onClick={() => cellOnClick && cellOnClick(day)}
+          as={typeof headerProperties?.onClick === 'function' ? 'button' : 'div'}
+          onClick={() => headerProperties?.onClick && headerProperties.onClick(day)}
           key={day}
           className={cn(
             'text-center text-xs font-semibold leading-6 text-neutral-700 flex justify-center bg-white py-2',
-            cellClassName,
+            headerProperties?.className,
           )}
         >
           <span>{day.slice(0, 1)}</span>

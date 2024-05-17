@@ -1,5 +1,6 @@
 import { useCalendarAtoms } from '../store'
 import { getMonth, getYear } from 'date-fns'
+import { createBreakpoint } from 'react-use'
 
 export const useCalculateMonth = () => {
   const [month, setMonth] = useCalendarAtoms('month')
@@ -30,3 +31,12 @@ export const useSetToday = () => {
     setYear(getYear(today))
   }
 }
+
+export const useBreakpoint = createBreakpoint({
+  sm: 0,
+  md: 640,
+  lg: 768,
+  xl: 1024,
+  xxl: 1280,
+  xxxl: 1536,
+}) as () => 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl'

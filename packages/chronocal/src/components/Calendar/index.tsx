@@ -6,7 +6,7 @@ import { ICalendarProps } from './types'
 
 export * from './components/CalendarBody'
 export * from './components/CalendarContent'
-export * from './components/CalendarDays'
+export * from './components/CalendarHeader'
 export * from './api'
 
 export const Calendar = (props: ICalendarProps) => {
@@ -22,7 +22,7 @@ export const Calendar = (props: ICalendarProps) => {
 
   return (
     <Provider store={calendarStore}>
-      <div {...rest} className={cn('lg:flex lg:h-full lg:flex-col', className)}>
+      <div {...rest} className={cn('flex h-full w-full flex-col', className)}>
         {children}
       </div>
     </Provider>

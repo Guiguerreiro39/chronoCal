@@ -4,18 +4,27 @@ import { Element, cn } from '../utils'
 import { IEventLimitProps } from '../types'
 
 export const EventLimit = (props: IEventLimitProps) => {
+  const { containerClassName, className, onClick, component } = props.properties || {}
+
   return (
-    <li className={cn('px-2 py-0.5', props.containerClassName)} style={{ gridColumnStart: getDay(props.day.date) }}>
-      <Element
-        as={typeof props.onClick === 'function' ? 'button' : 'div'}
-        onClick={() => props.onClick && props.onClick(props.day.events.slice(props.eventLimit))}
-        className={cn(
-          'font-semibold pointer-events-auto',
-          typeof props.className === 'function' ? props.className() : props.className,
-        )}
-      >
-        +{props.day.events.length - props.eventLimit} more
-      </Element>
+    <li
+      className={cn('px-2 py-0.5 md:block hidden', containerClassName)}
+      style={{ gridColumnStart: getDay(props.day.date) }}
+    >
+      {component ? (
+        component(props.events, props.properties)
+      ) : (
+        <Element
+          as={typeof onClick === 'function' ? 'button' : 'div'}
+          onClick={() => onClick && onClick(props.events)}
+          className={cn(
+            'font-semibold pointer-events-auto',
+            typeof className === 'function' ? className(props.events) : className,
+          )}
+        >
+          +{props.day.events.length - props.eventLimit} more
+        </Element>
+      )}
     </li>
   )
 }
